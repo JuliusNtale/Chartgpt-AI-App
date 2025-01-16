@@ -1,10 +1,10 @@
 import React from 'react';
-
+import { SignUp } from '@clerk/clerk-react';
 const SignUpPage = () => {
     return (
-        <div>
-            <h1>SignUp</h1>
-        </div>
+        <div className="min-h-screen flex justify-center items-center">
+      <SignUp redirectUrl="/dashboard" />
+    </div>
     );
 };
 

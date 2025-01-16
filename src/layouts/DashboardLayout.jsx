@@ -1,8 +1,21 @@
-import React from 'react';
-import { Outlet } from 'react-router-dom';
-
+import React, { useEffect } from 'react';
+import { Outlet, useNavigate } from 'react-router-dom';
+import { useAuth } from '@clerk/clerk-react';
 
 const DashboardLayout = () => {
+  const { userId, isLoaded } = useAuth();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (isLoaded && !userId) {
+      navigate('/sign-in'); // Redirect to sign-in if not authenticated
+    }
+  }, [isLoaded, userId, navigate]);
+
+  if (!isLoaded) {
+    return <div>Loading...</div>; // Show a loading state while auth is being verified
+  }
+
   return (
     <div className="min-h-screen flex flex-col md:flex-row bg-gray-100">
       {/* Sidebar/Menu */}
@@ -37,8 +50,8 @@ const DashboardLayout = () => {
           <p className="text-gray-600">
             This is where the content goes. You can add charts, data, or other
             dashboard components here.
-            <Outlet />
           </p>
+          <Outlet />
         </div>
       </div>
     </div>
