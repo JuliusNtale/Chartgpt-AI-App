@@ -2,7 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-    background-color: #00081b; /* Equivalent to bg-blue-900 */
-    color: white;
+@layer base {
+  body {
+    @apply bg-blue-900 text-white;
   }
+}

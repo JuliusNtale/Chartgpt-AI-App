@@ -1,4 +1,6 @@
 import React from 'react';
+import { Outlet } from 'react-router-dom';
+
 
 const DashboardLayout = () => {
   return (
@@ -35,6 +37,7 @@ const DashboardLayout = () => {
           <p className="text-gray-600">
             This is where the content goes. You can add charts, data, or other
             dashboard components here.
+            <Outlet />
           </p>
         </div>
       </div>
