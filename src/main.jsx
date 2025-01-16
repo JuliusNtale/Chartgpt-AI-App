@@ -1,28 +1,41 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import { createBrowserRouter, RouterProvider, Link, Outlet, useParams } from 'react-router-dom';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import './index.css';
-import HomePage from "./routes/HomePage";
-import Dashboard from "./routes/DashboardPage";
-import ChartPage from "./routes/ChartPage";
-import RootLayout from "./routes/RootLayout";
+import HomePage from './routes/HomePage';
+import DashboardPage from './routes/DashboardPage';
+import ChartPage from './routes/ChartPage';
+import RootLayout from './layouts/RootLayout';
+import DashboardLayout from './layouts/DashboardLayout';
 
-// RootLayout Component (For common layout across routes)
+// Router Configuration
 const router = createBrowserRouter([
-{
-  element: <RooterLayout />,
-  children: [
-    {
-      path: "/", 
-      element: <HomePage />,
-    },
-  ]
-}
+  {
+    element: <RootLayout />, // Root layout for common elements (e.g., header/footer)
+    children: [
+      {
+        path: '/', // Home Page
+        element: <HomePage />,
+      },
+      {
+        element: <DashboardLayout />, // Dashboard layout
+        children: [
+          {
+            path: '/dashboard', // Dashboard main page
+            element: <DashboardPage />,
+          },
+          {
+            path: '/dashboard/charts/:id', // Nested route for charts with dynamic ID
+            element: <ChartPage />,
+          },
+        ],
+      },
+    ],
+  },
+]);
 
-
-])
-// Render App
-ReactDOM.createRoot(document.getElementById("root")).render(
+// Render Application
+ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <RouterProvider router={router} />
   </React.StrictMode>
