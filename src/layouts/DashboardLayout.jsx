@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
 import { useAuth } from '@clerk/clerk-react';
+import { RingLoader } from "react-spinners";
 
 const DashboardLayout = () => {
   const { userId, isLoaded } = useAuth();
@@ -13,7 +14,14 @@ const DashboardLayout = () => {
   }, [isLoaded, userId, navigate]);
 
   if (!isLoaded) {
-    return <div>Loading...</div>; // Show a loading state while auth is being verified
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+      <RingLoader
+  color="#ff0000"
+  size={149}
+/> 
+      </div>
+    );
   }
 
   return (
