@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
 import { useAuth } from '@clerk/clerk-react';
-import { RingLoader } from "react-spinners";
+import { PropagateLoader } from "react-spinners";
 
 const DashboardLayout = () => {
   const { userId, isLoaded } = useAuth();
@@ -14,16 +14,15 @@ const DashboardLayout = () => {
   }, [isLoaded, userId, navigate]);
 
   if (!isLoaded) {
+    // Show loading spinner while authentication data is being loaded
     return (
       <div className="flex items-center justify-center min-h-screen">
-      <RingLoader
-  color="#ff0000"
-  size={149}
-/> 
+        <PropagateLoader color="#ff0000" size={15} />
       </div>
     );
   }
 
+  // Dashboard layout when the user is authenticated and data is loaded
   return (
     <div className="min-h-screen flex flex-col md:flex-row bg-gray-100">
       {/* Sidebar/Menu */}
