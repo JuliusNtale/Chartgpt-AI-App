@@ -8,7 +8,6 @@ import {
   UserButton,
 } from '@clerk/clerk-react';
 
-// Import your Publishable Key
 const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
 
 if (!PUBLISHABLE_KEY) {
@@ -20,7 +19,7 @@ const RootLayout = () => {
     <ClerkProvider publishableKey={PUBLISHABLE_KEY} afterSignOutUrl="/">
       <div className="min-h-screen flex flex-col bg-white text-white">
         {/* Navbar */}
-        <header className="h-16 flex items-center bg-black justify-between px-4 sm:px-8 md:px-12 lg:px-20 xl:px-48 text-lg">
+        <header className="h-19 p-2 flex items-center bg-black justify-between px-4 sm:px-8 md:px-12 lg:px-20 xl:px-48 text-xl"> {/* Changed from text-lg to text-xl */}
           {/* Logo */}
           <div>
             <Link to="/" className="flex items-center space-x-2">
@@ -36,7 +35,7 @@ const RootLayout = () => {
           <nav className="hidden md:flex space-x-6">
             <SignedOut>
               <SignInButton>
-                <button className="rounded-md p-2 rounded-lg font-bold hover:bg-white hover:text-black transition-colors duration-300">
+                <button className="rounded-md p-2 text-lg font-bold hover:bg-white hover:text-black transition-colors duration-300">
                   User
                 </button>
               </SignInButton>
@@ -48,7 +47,7 @@ const RootLayout = () => {
         </header>
 
         {/* Main Content */}
-        <main className="">
+        <main>
           <Outlet /> {/* Nested Routes */}
         </main>
       </div>

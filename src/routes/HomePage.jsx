@@ -1,8 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { TypeAnimation } from 'react-type-animation';
 
 const HomePage = () => {
+  const [typingStatus, setTypingStatus] = useState('human'); // Initialize the state with 'human'
+
   return (
     <div className="min-h-screen flex flex-col bg-gray-900 relative">
       {/* Rotating Background Image */}
@@ -16,7 +19,7 @@ const HomePage = () => {
       <div className="flex-grow flex items-center justify-center relative z-10">
         <div className="flex flex-col md:flex-row items-center justify-center w-full px-6 py-12 space-y-8 md:space-y-0">
           {/* Left Column */}
-          <div className="px-6  text-center md:text-left md:w-2/3">
+          <div className="px-6 text-center md:text-left md:w-1/2">
             <h1 className="text-5xl md:text-7xl font-extrabold mb-6 text-white">
               <span className="bg-clip-text text-transparent bg-gradient-to-r from-yellow-400 to-pink-500">
                 Hillsview
@@ -31,7 +34,7 @@ const HomePage = () => {
             <div>
               <Link
                 to="/dashboard"
-                className="px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-orange-500 transition duration-300"
+                className="px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-orange-500  hover:text-black transition duration-300"
               >
                 Get Started Now
               </Link>
@@ -39,7 +42,7 @@ const HomePage = () => {
           </div>
 
           {/* Right Column */}
-          <div className="relative md:w-1/3 flex justify-center">
+          <div className="relative md:w-2/2 flex justify-center">
             <motion.div
               className="w-64 h-64 bg-gradient-to-br from-purple-500 to-blue-600 rounded-full flex items-center justify-center shadow-lg"
               animate={{ rotate: [0, 10, -10] }}
@@ -57,6 +60,33 @@ const HomePage = () => {
               />
             </motion.div>
           </div>
+        </div>
+
+        {/* Dialogue Box */}
+        <div className="absolute bottom-8 right-8 flex items-center gap-2  bg-black text-white p-2 rounded-lg">
+          <img
+            src={typingStatus === 'human' ? '/Julius.png' : '/chart bot.png'}
+            alt="Avatar"
+            className="w-16 h-16 rounded-full object-cover"
+          />
+          <TypeAnimation
+            sequence={[
+              'Human: We produce food for Mice',
+              2000, () => setTypingStatus('bot'),
+              'Bot: We produce food for Hamsters',
+              2000, () => setTypingStatus('human'),
+              'Human: We produce food for Guinea Pigs',
+              2000, () => setTypingStatus('bot'),
+              'Bot: We produce food for Chinchillas',
+              2000, () => setTypingStatus('human'),
+            ]}
+            wrapper="span"
+            speed={50}
+            cursor = {true}
+            style={{display: 'inline-block' }}
+            omitDeletionAnimation={true} 
+            repeat={Infinity}
+          />
         </div>
       </div>
 

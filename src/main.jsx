@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { createBrowserRouter, RouterProvider, Navigate } from 'react-router-dom';
+import { useAuth } from '@clerk/clerk-react'; // Import Clerk's useAuth hook
 import './index.css';
 import HomePage from './routes/HomePage';
 import DashboardPage from './routes/DashboardPage';
@@ -9,12 +10,28 @@ import RootLayout from './layouts/RootLayout';
 import DashboardLayout from './layouts/DashboardLayout';
 import SignUpPage from './routes/SignUpPage';
 import SignInPage from './routes/SignInPage';
+import { lazy, Suspense } from 'react';
 
 // Authentication check HOC
 const ProtectedRoute = ({ element }) => {
-  const isAuthenticated = false; // Replace with actual authentication logic
-  return isAuthenticated ? element : <Navigate to="/sign-in" />;
+  const { userId, isLoaded } = useAuth();
+
+  if (!isLoaded) {
+    return <div>Loading...</div>; // Replace with your loading component
+  }
+
+  if (!userId) {
+    return <Navigate to="/sign-in" />;
+  }
+
+  return element;
 };
+const ErrorBoundary = ({ error }) => (
+  <div className="p-4 text-center">
+    <h1 className="text-2xl font-bold text-red-600">Something went wrong!</h1>
+    <p className="text-gray-600">{error?.message || "An unexpected error occurred."}</p>
+  </div>
+);
 
 // Router Configuration
 const router = createBrowserRouter([
@@ -34,7 +51,7 @@ const router = createBrowserRouter([
         element: <SignInPage />,
       },
       {
-        element: <DashboardLayout />, // Dashboard layout
+        element: <DashboardLayout />, // Dashboard layout for dashboard routes
         children: [
           {
             path: '/dashboard', // Protected Dashboard main page
@@ -46,6 +63,11 @@ const router = createBrowserRouter([
           },
         ],
       },
+      // Default Redirect
+      {
+        path: '*',
+        element: <Navigate to="/" replace />, // Redirect unmatched routes to the home page
+      },
     ],
   },
 ]);
@@ -53,6 +75,8 @@ const router = createBrowserRouter([
 // Render Application
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <RouterProvider router={router} />
+    <Suspense fallback={<div>Loading...</div>}>
+      <RouterProvider router={router} />
+    </Suspense>
   </React.StrictMode>
 );
