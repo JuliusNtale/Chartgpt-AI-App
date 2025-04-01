@@ -1,12 +1,6 @@
 import React from 'react';
 import { Link, Outlet } from 'react-router-dom';
-import {
-  ClerkProvider,
-  SignInButton,
-  SignedIn,
-  SignedOut,
-  UserButton,
-} from '@clerk/clerk-react';
+import { ClerkProvider, SignedIn, SignedOut, UserButton } from '@clerk/clerk-react';
 
 const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
 
@@ -17,28 +11,26 @@ if (!PUBLISHABLE_KEY) {
 const RootLayout = () => {
   return (
     <ClerkProvider publishableKey={PUBLISHABLE_KEY} afterSignOutUrl="/">
-      <div className="min-h-screen flex flex-col bg-white text-white">
+      <div className="min-h-screen flex flex-col bg-gray-100 ">
         {/* Navbar */}
-        <header className="h-19 p-2 flex items-center bg-black justify-between px-4 sm:px-8 md:px-12 lg:px-20 xl:px-48 text-xl"> {/* Changed from text-lg to text-xl */}
+        <header className=" bg-black flex items-center justify-between px-6 shadow-md text-white transition-colors duration-300">
           {/* Logo */}
-          <div>
-            <Link to="/" className="flex items-center space-x-2">
-              <img src="/logo.png" alt="Hillsview AI logo" className="h-15 w-12" />
-              <span className="font-semibold">Hillsview</span>
-              <span className="w-10 h-6 rounded-md bg-white text-black flex items-center justify-center font-bold">
+          <Link to="/" className="flex items-center space-x-2">
+              <img src="/logo.png" alt="Hillsview AI logo" className="h-12 w-12" />
+              <span className=" text-xl font-semibold">Hillsview</span>
+              <span className="w-10 h-6 text-xl rounded-md bg-white text-black flex items-center justify-center font-bold">
                 AI
               </span>
             </Link>
-          </div>
 
-          {/* User */}
-          <nav className="hidden md:flex space-x-6">
+          {/* User Navigation */}
+          <nav className="flex space-x-6">
             <SignedOut>
-              <SignInButton>
-                <button className="rounded-md p-2 text-lg font-bold hover:bg-white hover:text-black transition-colors duration-300">
-                  User
+              <Link to="/sign-in">
+                <button className="p-2 bg-transparent text-white rounded-md hover:bg-white hover:text-black transition duration-300">
+                  Sign In
                 </button>
-              </SignInButton>
+              </Link>
             </SignedOut>
             <SignedIn>
               <UserButton afterSignOutUrl="/" />
@@ -47,8 +39,8 @@ const RootLayout = () => {
         </header>
 
         {/* Main Content */}
-        <main>
-          <Outlet /> {/* Nested Routes */}
+        <main className="flex-grow h-[calc(100vh-3rem)]  justify-center items-center">
+          <Outlet />
         </main>
       </div>
     </ClerkProvider>

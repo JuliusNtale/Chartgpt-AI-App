@@ -11,11 +11,11 @@ const DashboardLayout = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const toggleSidebar = () => setIsSidebarOpen((prev) => !prev);
-
   const closeSidebar = () => setIsSidebarOpen(false);
 
   useEffect(() => {
-    if (isLoaded && !userId) {
+    if (!isLoaded) return;
+    if (!userId) {
       navigate('/sign-in');
     }
   }, [isLoaded, userId, navigate]);
@@ -29,36 +29,29 @@ const DashboardLayout = () => {
   }
 
   return (
-    <div className="min-h-screen flex flex-col md:flex-row bg-gray-50 relative">
+    <div className="h-screen flex flex-col md:flex-row bg-gray-50 relative overflow-hidden">
       {/* Sidebar */}
       <motion.div
-        className={`fixed top-0 left-0 w-64 h-full bg-blue-600 text-white z-50 shadow-lg transition-transform duration-300 transform ${
+        className={`fixed top-0 left-0 w-72 h-full bg-blue-600 text-white z-50 shadow-lg transition-transform duration-300 transform ${
           isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
-        } md:relative md:translate-x-0 md:w-1/4`}
+        } md:relative md:translate-x-0 md:w-64`}
       >
-        <ChartList toggleSidebar={toggleSidebar} />
+        <ChartList isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
       </motion.div>
 
-      {/* Overlay for small screens */}
+      {/* Overlay for Mobile */}
       {isSidebarOpen && (
-        <div
-          className="fixed inset-0 bg-black opacity-50 z-40 md:hidden"
-          onClick={closeSidebar}
-        ></div>
+        <div className="fixed inset-0 bg-black opacity-50 z-40 md:hidden" onClick={closeSidebar}></div>
       )}
 
       {/* Main Content */}
-      <div
-        className={`flex-1 p-6 bg-gray-100 transition-all duration-300 ${
-          isSidebarOpen ? 'ml-3/5' : '' // Adjusted margin for content shift on mobile screens
-        }`}
-      >
-        {/* Toggle Button */}
+      <div className="flex-1 p-6 bg-gray-100 transition-all duration-300">
+        {/* Sidebar Toggle Button (Mobile) */}
         <button
           className="md:hidden px-4 py-2 bg-blue-600 text-white rounded shadow-lg"
           onClick={toggleSidebar}
         >
-          {isSidebarOpen ? 'Close Menu' : 'Open Menu'}
+          {isSidebarOpen ? 'Close' : 'Menu'}
         </button>
 
         <motion.div
@@ -69,10 +62,6 @@ const DashboardLayout = () => {
         >
           <h1 className="text-3xl font-bold text-gray-800 mb-4">Dashboard Content</h1>
           <div className="bg-white p-6 rounded-lg shadow">
-            <p className="text-gray-600">
-              This is where the content goes. You can add charts, data, or other dashboard
-              components here.
-            </p>
             <Outlet />
           </div>
         </motion.div>
