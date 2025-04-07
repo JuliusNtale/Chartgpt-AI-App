@@ -3,7 +3,7 @@ Sure Julius! Here's a professional and well-structured `README.md` file you can 
 ---
 
 ```markdown
-# Hillsview AI Dashboard
+# Hillsview AI 
 
 Welcome to the **Hillsview AI Dashboard**, a sleek, responsive, and interactive user interface built with React, Tailwind CSS, and Framer Motion. This dashboard allows users to create charts, analyze images, interact with AI features, and access recent chart data. It also integrates authentication via Clerk and provides easy navigation for both desktop and mobile users.
 
@@ -55,8 +55,8 @@ Welcome to the **Hillsview AI Dashboard**, a sleek, responsive, and interactive 
 
 1. **Clone the Repository**
    ```bash
-   git clone https://github.com/JuliusNtale/hillsview-ai-dashboard.git
-   cd hillsview-ai-dashboard
+   git clone https://github.com/JuliusNtale/Chartgpt-AI-App.git
+   cd Chartgpt-AI-App.git
    ```
 
 2. **Install Dependencies**
