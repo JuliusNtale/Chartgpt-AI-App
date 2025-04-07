@@ -1,6 +1,4 @@
----
 
-```markdown
 # Hillsview AI 
 
 Welcome to the **Hillsview AI Dashboard**, a sleek, responsive, and interactive user interface built with React, Tailwind CSS, and Framer Motion. This dashboard allows users to create charts, analyze images, interact with AI features, and access recent chart data. It also integrates authentication via Clerk and provides easy navigation for both desktop and mobile users.
