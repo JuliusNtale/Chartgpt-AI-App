@@ -1,5 +1,3 @@
-Sure Julius! Here's a professional and well-structured `README.md` file you can use for your project on GitHub.
-
 ---
 
 ```markdown
