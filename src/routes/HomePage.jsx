@@ -1,13 +1,15 @@
 import React, { useState, useMemo } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { TypeAnimation } from "react-type-animation";
 import PropTypes from "prop-types";
+import { useAuth } from '@clerk/clerk-react';
 
 const HomePage = () => {
   const [typingStatus, setTypingStatus] = useState("human");
+  const { isSignedIn } = useAuth();
+  const navigate = useNavigate();
   
-  // Memoized dialogue sequences
   const dialogueSequences = useMemo(() => [
     "Human: We produce food for Mice",
     2000,
@@ -23,13 +25,20 @@ const HomePage = () => {
     () => setTypingStatus("human"),
   ], []);
 
-  // Avatar image based on typing status
   const avatarImage = useMemo(() => (
     typingStatus === "human" ? "/Julius.png" : "/chart bot.png"
   ), [typingStatus]);
 
+  const handleGetStarted = () => {
+    if (isSignedIn) {
+      navigate('/dashboard');
+    } else {
+      navigate('/sign-in');
+    }
+  };
+
   return (
-    <div className="relative flex min-h-[calc(100vh-3rem)] flex-col bg-gray-900 overflow-hidden">
+    <div className="relative flex min-h-[calc(100vh-4rem)] flex-col bg-gray-900 overflow-hidden">
       {/* Background Image */}
       <motion.img
         src="/orbital.png"
@@ -59,12 +68,12 @@ const HomePage = () => {
                 Your one-stop solution for photography, videography, and AI-driven tools.
               </p>
               
-              <Link
-                to="/dashboard"
+              <button
+                onClick={handleGetStarted}
                 className="inline-block rounded-lg bg-gradient-to-r from-blue-600 to-blue-500 px-8 py-3 font-semibold text-white shadow-lg transition-all hover:from-orange-500 hover:to-pink-500 hover:shadow-xl hover:text-black"
               >
                 Get Started Now
-              </Link>
+              </button>
             </div>
 
             {/* Animated Bot */}
@@ -86,6 +95,7 @@ const HomePage = () => {
                 src="/bot.png"
                 alt="AI Assistant"
                 className="absolute inset-0 h-full w-full p-8 object-contain"
+                loading="lazy"
               />
             </motion.div>
           </div>
@@ -145,7 +155,6 @@ const HomePage = () => {
   );
 };
 
-// Reusable Footer Link Component
 const FooterLink = ({ href, to, text }) => {
   const className = "text-xs text-gray-300 hover:text-blue-400 transition-colors sm:text-sm";
   

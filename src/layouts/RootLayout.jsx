@@ -3,17 +3,7 @@ import { Link, Outlet } from 'react-router-dom';
 import { ClerkProvider, SignedIn, SignedOut, UserButton } from '@clerk/clerk-react';
 
 const RootLayout = () => {
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
-
-  // Auto-close mobile menu on desktop
-  useEffect(() => {
-    const handleResize = () => 
-      window.innerWidth >= 768 && setIsMobileMenuOpen(false);
-    
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
 
   // Apply dark mode class
   useEffect(() => {
@@ -28,11 +18,11 @@ const RootLayout = () => {
       }}
     >
       <div className="flex min-h-screen flex-col bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
-        {/* Glass Navbar */}
+        {/* Navbar */}
         <header className="sticky top-0 z-50 bg-white/80 dark:bg-gray-800/80 backdrop-blur-md border-b border-gray-200 dark:border-gray-700">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="flex h-16 items-center justify-between">
-              {/* Logo with preloading */}
+              {/* Logo */}
               <Link
                 to="/"
                 className="flex items-center space-x-2"
@@ -48,20 +38,12 @@ const RootLayout = () => {
                 </span>
               </Link>
 
-              {/* Mobile menu button */}
-              <button
-                className="md:hidden rounded-md p-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
-                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              >
-                {isMobileMenuOpen ? '✕' : '☰'}
-              </button>
-
-              {/* Desktop Navigation */}
-              <nav className="hidden md:flex items-center space-x-6">
+              {/* Navigation - Sign In always visible */}
+              <nav className="flex items-center space-x-6">
                 <SignedOut>
                   <Link
                     to="/sign-in"
-                    className="text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                    className="text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors px-3 py-1 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700"
                   >
                     Sign In
                   </Link>
@@ -71,6 +53,7 @@ const RootLayout = () => {
                     <button
                       onClick={() => setDarkMode(!darkMode)}
                       className="rounded-full p-2 hover:bg-gray-100 dark:hover:bg-gray-700"
+                      aria-label="Toggle dark mode"
                     >
                       {darkMode ? '☀️' : '🌙'}
                     </button>
@@ -80,31 +63,9 @@ const RootLayout = () => {
               </nav>
             </div>
           </div>
-
-          {/* Mobile Menu */}
-          {isMobileMenuOpen && (
-            <div className="md:hidden bg-white dark:bg-gray-800 shadow-lg animate-fade-in">
-              <div className="space-y-1 px-2 pb-3 pt-2">
-                <SignedOut>
-                  <Link
-                    to="/sign-in"
-                    className="block rounded-md px-3 py-2 text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  >
-                    Sign In
-                  </Link>
-                </SignedOut>
-                <SignedIn>
-                  <div className="border-t border-gray-200 dark:border-gray-700 pt-4">
-                    <UserButton afterSignOutUrl="/" />
-                  </div>
-                </SignedIn>
-              </div>
-            </div>
-          )}
         </header>
 
-        {/* Main Content */}
+        {/* Main Content Area - Now contains dashboard layout */}
         <main className="flex-1 overflow-y-auto">
           <Outlet />
         </main>

@@ -19,12 +19,12 @@ const ChartList = ({ closeSidebar }) => {
   ];
 
   return (
-    <div className="flex flex-col h-full bg-gray-900 text-white">
+    <div className=" min-h-[calc(100vh-4rem)] flex flex-col h-full bg-gradient-to-b from-blue-950 to-blue-700 text-black">
       {/* Scrollable Content Area */}
       <div className="flex-1 overflow-y-auto p-4">
         {/* Main Menu */}
         <section className="mb-6">
-          <h2 className="text-lg font-semibold mb-3 text-gray-300">Dashboard Menu</h2>
+          <h2 className="text-lg font-semibold mb-3 text-blue-100">Dashboard Menu</h2>
           <ul className="space-y-2">
             {menuItems.map((item, index) => (
               <motion.li
@@ -37,7 +37,7 @@ const ChartList = ({ closeSidebar }) => {
                   <Link
                     to={item.to}
                     onClick={closeSidebar}
-                    className="block px-3 py-2 bg-gray-800 rounded hover:bg-orange-500 transition-colors"
+                    className="block px-3 py-2 bg-blue-700/80 rounded hover:bg-orange-500 transition-colors"
                   >
                     {item.label}
                   </Link>
@@ -47,7 +47,7 @@ const ChartList = ({ closeSidebar }) => {
                     target="_blank"
                     rel="noopener noreferrer"
                     onClick={closeSidebar}
-                    className="block px-3 py-2 bg-gray-800 rounded hover:bg-orange-500 transition-colors"
+                    className="block px-3 py-2 bg-blue-700/80 rounded hover:bg-orange-500 transition-colors"
                   >
                     {item.label}
                   </a>
@@ -59,7 +59,7 @@ const ChartList = ({ closeSidebar }) => {
 
         {/* Recent Charts */}
         <section>
-          <h2 className="text-lg font-semibold mb-3 text-gray-300">Recent Charts</h2>
+          <h2 className="text-lg font-semibold mb-3 text-blue-100">Recent Charts</h2>
           <ul className="space-y-1">
             {recentCharts.map((chart, index) => (
               <motion.li
@@ -71,7 +71,7 @@ const ChartList = ({ closeSidebar }) => {
                 <Link
                   to={`/dashboard/charts/${chart.id}`}
                   onClick={closeSidebar}
-                  className="block px-3 py-2 rounded hover:bg-blue-700 transition-colors text-sm"
+                  className="block px-3 py-2 rounded hover:bg-blue-500 transition-colors text-sm"
                 >
                   {chart.name}
                 </Link>
@@ -82,10 +82,17 @@ const ChartList = ({ closeSidebar }) => {
       </div>
 
       {/* Upgrade Banner - Fixed at Bottom */}
-      <div className="p-1 bg-black hover:bg-blue-700 transition-colors cursor-pointer" 
-           onClick={() => window.location.href = '/upgrade'}>
-        <div className="pl-2  flex items-center gap-3">
-          <img src="/logo1.png" alt="Pro Upgrade" className="w-10 h-10" />
+      <div 
+        className="p-2 bg-black hover:bg-orange-500 transition-colors cursor-pointer"
+        onClick={() => window.location.href = '/upgrade'}
+      >
+        <div className="flex items-center gap-3 p-2">
+          <img 
+            src="/logo1.png" 
+            alt="Pro Upgrade" 
+            className="w-10 h-10" 
+            loading="lazy"
+          />
           <div>
             <h3 className="font-medium text-white">Upgrade to HillsviewPro</h3>
             <p className="text-xs text-blue-200">To unlock premium features</p>
