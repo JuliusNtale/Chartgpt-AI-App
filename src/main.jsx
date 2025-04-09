@@ -23,19 +23,34 @@ const LoadingSpinner = () => (
 );
 
 const ProtectedRoute = ({ children }) => {
-  const { isLoaded, userId } = useAuth();
+  const { isLoaded, isSignedIn } = useAuth();
 
   if (!isLoaded) return <LoadingSpinner />;
-  return userId ? children : <Navigate to="/sign-in" />;
+  return isSignedIn ? children : <Navigate to="/sign-in" />;
 };
 
 const router = createBrowserRouter([
+  // Main app routes
   {
     element: <RootLayout />,
     children: [
       { path: '/', element: <HomePage /> },
-      { path: '/sign-up', element: <SignUpPage /> },
-      { path: '/sign-in', element: <SignInPage /> },
+      { 
+        path: '/sign-in', 
+        element: <SignInPage />,
+        children: [
+          { path: ':flow', element: <SignInPage /> }, // Handles /sign-in/oauth, /sign-in/verify, etc.
+          { path: ':flow/:param', element: <SignInPage /> }
+        ]
+      },
+      { 
+        path: '/sign-up', 
+        element: <SignUpPage />,
+        children: [
+          { path: ':flow', element: <SignUpPage /> },
+          { path: ':flow/:param', element: <SignUpPage /> }
+        ]
+      },
       {
         element: <DashboardLayout />,
         children: [
@@ -57,7 +72,16 @@ const router = createBrowserRouter([
           }
         ]
       },
-      { path: '*', element: <Navigate to="/" replace /> }
+      // Catch-all route that ignores Clerk's paths
+      { 
+        path: '*',
+        element: <Navigate to="/" replace />,
+        shouldRevalidate: ({ nextUrl }) => {
+          // Skip redirect for Clerk's internal paths
+          return !nextUrl.pathname.startsWith('/sign-in/') && 
+                 !nextUrl.pathname.startsWith('/sign-up/');
+        }
+      }
     ]
   }
 ]);
