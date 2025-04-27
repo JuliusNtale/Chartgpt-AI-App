@@ -11,16 +11,16 @@ const HomePage = () => {
   const navigate = useNavigate();
   
   const dialogueSequences = useMemo(() => [
-    "Human: We produce food for Mice",
+    "Human: I want to create a Logo for a Company",
     2000,
     () => setTypingStatus("bot"),
-    "Bot: We produce food for Hamsters",
+    "Bot: What kind of company are you planing to create a logo for?",
     2000,
     () => setTypingStatus("human"),
-    "Human: We produce food for Guinea Pigs",
+    "Human: It is a Broadcasting Media Company In Australia",
     2000,
     () => setTypingStatus("bot"),
-    "Bot: We produce food for Chinchillas",
+    "Bot: Well i can give you same idea that you can choose as a start up ",
     2000,
     () => setTypingStatus("human"),
   ], []);
