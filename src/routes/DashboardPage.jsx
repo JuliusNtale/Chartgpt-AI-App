@@ -1,10 +1,52 @@
-import React from 'react';
+import { memo, useMemo, useState, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import { useDebounce } from '@/hooks/useOptimization';
+
+// Memoized OptionCard component
+const OptionCard = memo(({ src, label, color, to, index }) => (
+  <motion.div
+    className={`relative group cursor-pointer overflow-hidden rounded-xl bg-gradient-to-r ${color} p-6 shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-105`}
+    initial={{ opacity: 0, y: 20 }}
+    animate={{ opacity: 1, y: 0 }}
+    transition={{ delay: index * 0.1 }}
+    whileHover={{ y: -5 }}
+    whileTap={{ scale: 0.98 }}
+  >
+    <Link to={to} className="block h-full">
+      <div className="flex flex-col items-center text-center h-full justify-center">
+        <motion.img
+          src={src}
+          alt={label}
+          className="w-16 h-16 mb-4 filter brightness-0 invert"
+          loading="lazy"
+          whileHover={{ rotate: 5 }}
+        />
+        <h3 className="text-white font-semibold text-lg group-hover:text-opacity-90">
+          {label}
+        </h3>
+      </div>
+      <div className="absolute inset-0 bg-black opacity-0 group-hover:opacity-10 transition-opacity duration-300" />
+    </Link>
+  </motion.div>
+));
+
+OptionCard.displayName = 'OptionCard';
+OptionCard.propTypes = {
+  src: PropTypes.string.isRequired,
+  label: PropTypes.string.isRequired,
+  color: PropTypes.string.isRequired,
+  to: PropTypes.string.isRequired,
+  index: PropTypes.number.isRequired,
+};
 
 const DashboardPage = () => {
-  const options = [
+  const [inputValue, setInputValue] = useState('');
+  const debouncedInput = useDebounce(inputValue, 300);
+
+  // Memoized options to prevent unnecessary re-renders
+  const options = useMemo(() => [
     { 
       src: "/chat.png", 
       label: "Create a New Chat", 
@@ -23,7 +65,19 @@ const DashboardPage = () => {
       color: "from-green-500 to-green-600",
       to: "/dashboard/code-help"
     },
-  ];
+  ], []);
+
+  const handleSubmit = useCallback((e) => {
+    e.preventDefault();
+    if (debouncedInput.trim()) {
+      console.log('Submitting:', debouncedInput);
+      // Handle form submission with debounced value
+    }
+  }, [debouncedInput]);
+
+  const handleInputChange = useCallback((e) => {
+    setInputValue(e.target.value);
+  }, []);
 
   return (
     <div className="w-full">
@@ -31,7 +85,7 @@ const DashboardPage = () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {options.map((option, index) => (
           <OptionCard 
-            key={index}
+            key={option.to} // Use stable key
             src={option.src}
             label={option.label}
             color={option.color}
@@ -48,70 +102,31 @@ const DashboardPage = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2 }}
       >
-        <SearchForm />
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+          <div className="relative flex items-center">
+            <input
+              type="text"
+              value={inputValue}
+              onChange={handleInputChange}
+              placeholder="What would you like to create today?"
+              className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 pr-14"
+              autoComplete="off"
+            />
+            <motion.button
+              type="submit"
+              disabled={!debouncedInput.trim()}
+              className="absolute right-2 top-1/2 transform -translate-y-1/2 flex items-center justify-center w-10 h-10 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200 shadow-sm"
+              whileHover={{ scale: !debouncedInput.trim() ? 1 : 1.05 }}
+              whileTap={{ scale: !debouncedInput.trim() ? 1 : 0.95 }}
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+              </svg>
+            </motion.button>
+          </div>
+        </form>
       </motion.div>
     </div>
-  );
-};
-
-const OptionCard = ({ src, label, color, to, index }) => (
-  <Link to={to}>
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: index * 0.1 }}
-      className={`flex flex-col items-center justify-center bg-gradient-to-br ${color} text-white shadow-lg rounded-lg p-6 hover:shadow-xl transition-all duration-300 hover:scale-[1.03] cursor-pointer h-full`}
-      whileHover={{ y: -5 }}
-      whileTap={{ scale: 0.95 }}
-    >
-      <img 
-        src={src} 
-        alt={label} 
-        className="w-16 h-16 mb-4 object-contain" 
-        loading="lazy"
-      />
-      <span className="text-lg font-semibold text-center">{label}</span>
-    </motion.div>
-  </Link>
-);
-
-OptionCard.propTypes = {
-  src: PropTypes.string.isRequired,
-  label: PropTypes.string.isRequired,
-  color: PropTypes.string.isRequired,
-  to: PropTypes.string.isRequired,
-  index: PropTypes.number.isRequired
-};
-
-const SearchForm = () => {
-  const [query, setQuery] = React.useState('');
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // Handle search submission
-    console.log('Search query:', query);
-  };
-
-  return (
-    <form 
-      onSubmit={handleSubmit}
-      className="flex items-center bg-white dark:bg-gray-800 shadow-lg rounded-lg space-x-2 p-2 transition-colors duration-300"
-    >
-      <input
-        type="text"
-        value={query}
-        onChange={(e) => setQuery(e.target.value)}
-        placeholder="Ask me anything..."
-        className="flex-1 px-4 py-2 text-gray-700 dark:text-gray-200 bg-transparent focus:outline-none"
-      />
-      <button
-        type="submit"
-        className="bg-blue-600 w-10 h-10 flex items-center justify-center rounded-full text-white hover:bg-orange-500 transition-all duration-300"
-        aria-label="Search"
-      >
-        <img src="/arrow.png" alt="Send" className="w-6 h-6" loading="lazy" />
-      </button>
-    </form>
   );
 };
 

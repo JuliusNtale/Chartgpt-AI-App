@@ -4,6 +4,10 @@ import { createBrowserRouter, RouterProvider, Navigate } from 'react-router-dom'
 import { useAuth } from '@clerk/clerk-react';
 import '@/index.css';
 
+// Error Boundary
+import ErrorBoundary from '@/components/ErrorBoundary';
+import { LoadingSpinner } from '@/components/LoadingComponents';
+
 // Layouts
 import RootLayout from '@/layouts/RootLayout';
 import DashboardLayout from '@/layouts/DashboardLayout';
@@ -14,13 +18,6 @@ const SignUpPage = lazy(() => import('@routes/SignUpPage'));
 const SignInPage = lazy(() => import('@routes/SignInPage'));
 const DashboardPage = lazy(() => import('@routes/DashboardPage'));
 const ChartPage = lazy(() => import('@routes/ChartPage'));
-
-// Components
-const LoadingSpinner = () => (
-  <div className="grid h-screen place-items-center">
-    <div className="h-12 w-12 animate-spin rounded-full border-4 border-blue-500 border-t-transparent" />
-  </div>
-);
 
 const ProtectedRoute = ({ children }) => {
   const { isLoaded, isSignedIn } = useAuth();
@@ -88,8 +85,10 @@ const router = createBrowserRouter([
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <Suspense fallback={<LoadingSpinner />}>
-      <RouterProvider router={router} />
-    </Suspense>
+    <ErrorBoundary fallbackMessage="The application encountered an error. Please refresh the page.">
+      <Suspense fallback={<LoadingSpinner />}>
+        <RouterProvider router={router} />
+      </Suspense>
+    </ErrorBoundary>
   </React.StrictMode>
 );

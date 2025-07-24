@@ -9,12 +9,12 @@ const DashboardLayout = () => {
   const { userId, isLoaded } = useAuth();
   const navigate = useNavigate();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [isMobile, setIsMobile] = useState(window.innerWidth < 1024);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 1024); // Changed to lg breakpoint
 
   const handleResize = useCallback(() => {
     const mobile = window.innerWidth < 1024;
     setIsMobile(mobile);
-    if (!mobile) setIsSidebarOpen(false);
+    if (!mobile) setIsSidebarOpen(false); // Auto-close sidebar on desktop
   }, []);
 
   const toggleSidebar = useCallback(() => {
@@ -38,9 +38,9 @@ const DashboardLayout = () => {
   if (!isLoaded) {
     return (
       <div className="flex items-center justify-center min-h-[calc(100vh-4rem)]">
-        <div className="text-center space-y-4">
+        <div className="text-center">
           <PropagateLoader color="#3b82f6" size={15} speedMultiplier={0.8} />
-          <p className="text-sm text-gray-600 dark:text-gray-400">
+          <p className="mt-4 text-sm text-gray-600 dark:text-gray-400 animate-pulse">
             Loading your dashboard...
           </p>
         </div>
@@ -50,8 +50,8 @@ const DashboardLayout = () => {
 
   return (
     <div className="flex h-[calc(100vh-4rem)] bg-gray-50 dark:bg-gray-900">
-      {/* Mobile Menu Button */}
-      {isMobile && !isSidebarOpen && (
+      {/* Enhanced Mobile Menu Button */}
+      {isMobile && (
         <motion.button
           whileTap={{ scale: 0.95 }}
           className="fixed top-20 left-4 z-50 flex items-center justify-center w-12 h-12 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-all duration-200"
@@ -69,7 +69,7 @@ const DashboardLayout = () => {
         </motion.button>
       )}
 
-      {/* Sidebar */}
+      {/* Enhanced Sidebar */}
       <AnimatePresence>
         {(!isMobile || isSidebarOpen) && (
           <>
@@ -79,7 +79,7 @@ const DashboardLayout = () => {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm lg:hidden"
+                className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm"
                 onClick={closeSidebar}
               />
             )}
@@ -99,9 +99,12 @@ const DashboardLayout = () => {
                 overflow-hidden
               `}
             >
-              {/* Sidebar Header - Mobile Close Button Only */}
-              {isMobile && (
-                <div className="flex items-center justify-end p-4 border-b border-gray-200 dark:border-gray-700">
+              {/* Sidebar Header */}
+              <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
+                <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
+                  Dashboard
+                </h2>
+                {isMobile && (
                   <button
                     onClick={closeSidebar}
                     className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
@@ -111,32 +114,44 @@ const DashboardLayout = () => {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                     </svg>
                   </button>
-                </div>
-              )}
-              
-              {/* Sidebar Content */}
-              <div className="flex-1 overflow-y-auto">
-                <ChartList closeSidebar={closeSidebar} />
+                )}
               </div>
-            </motion.aside>
-          </>
+              
+              <ChartList 
+              isMobile={isMobile} 
+              closeSidebar={closeSidebar} 
+            />
+          </motion.aside>
+        )}
+      </AnimatePresence>
+
+      {/* Overlay */}
+      <AnimatePresence>
+        {isMobile && isSidebarOpen && (
+          <motion.div
+            key="overlay"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 0.5 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-10 bg-black"
+            onClick={closeSidebar}
+          />
         )}
       </AnimatePresence>
 
       {/* Main Content */}
-      <main className="flex-1 flex flex-col overflow-hidden">
-        <div className="flex-1 overflow-y-auto">
-          <div className="h-full p-4 lg:p-8">
-            <div className="max-w-7xl mx-auto h-full">
-              <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 h-full overflow-hidden">
-                <div className="p-6 lg:p-8 h-full">
-                  <Outlet />
-                </div>
-              </div>
-            </div>
-          </div>
+      <motion.main
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.2 }}
+        className={`flex-1 overflow-y-auto p-6 transition-all duration-300 ${
+          !isMobile ? 'ml-72' : ''
+        } mt-16 md:mt-0`}
+      >
+        <div className="mx-auto max-w-7xl">
+          <Outlet />
         </div>
-      </main>
+      </motion.main>
     </div>
   );
 };

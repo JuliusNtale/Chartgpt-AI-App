@@ -1,26 +1,15 @@
-import { memo, useState, useMemo } from 'react';
+import { memo } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 
 const ChartList = memo(({ closeSidebar }) => {
-  const [searchQuery, setSearchQuery] = useState('');
-
   // Sample data - replace with your actual data source
-  const recentCharts = Array.from({ length: 8 }, (_, i) => ({
+  const recentCharts = Array.from({ length: 5 }, (_, i) => ({
     id: i + 1,
     name: `Chart ${i + 1}`,
-    type: i % 3 === 0 ? 'Bar Chart' : i % 3 === 1 ? 'Line Chart' : 'Pie Chart',
+    type: i % 2 === 0 ? 'Bar Chart' : 'Line Chart',
     lastModified: new Date(Date.now() - i * 24 * 60 * 60 * 1000).toLocaleDateString()
   }));
-
-  // Filter charts based on search query
-  const filteredCharts = useMemo(() => {
-    if (!searchQuery.trim()) return recentCharts;
-    return recentCharts.filter(chart => 
-      chart.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      chart.type.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-  }, [searchQuery, recentCharts]);
 
   const menuItems = [
     { 
@@ -93,30 +82,13 @@ const ChartList = memo(({ closeSidebar }) => {
       {/* Divider */}
       <div className="mx-4 border-t border-gray-200 dark:border-gray-700"></div>
 
-      {/* Recent Charts */}
-      <div className="flex-1 p-6 overflow-y-auto">
-        <div className="mb-4">
-          <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3 uppercase tracking-wide">
-            Recent Charts
-          </h3>
-          
-          {/* Search Input */}
-          <div className="relative">
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search charts..."
-              className="w-full px-3 py-2 pl-10 text-sm bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200"
-            />
-            <svg className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-            </svg>
-          </div>
-        </div>
-        
-        <div className="space-y-2 max-h-96 overflow-y-auto">
-          {filteredCharts.map((chart, index) => (
+      {/* Recent Charts - Now takes most of the space */}
+      <div className="flex-1 p-4 overflow-y-auto">
+        <h3 className="text-xs font-semibold text-gray-700 dark:text-gray-300 mb-3 uppercase tracking-wide">
+          Recent Charts
+        </h3>
+        <div className="space-y-2">
+          {recentCharts.map((chart, index) => (
             <motion.div
               key={chart.id}
               initial={{ opacity: 0, y: 10 }}
@@ -126,21 +98,21 @@ const ChartList = memo(({ closeSidebar }) => {
               <Link
                 to={`/dashboard/charts/${chart.id}`}
                 onClick={closeSidebar}
-                className="group block p-4 rounded-xl border border-gray-200 dark:border-gray-700 hover:border-blue-300 dark:hover:border-blue-600 hover:bg-blue-50/50 dark:hover:bg-gray-700/50 transition-all duration-200"
+                className="group block p-3 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-blue-300 dark:hover:border-blue-600 hover:bg-blue-50/50 dark:hover:bg-gray-700/50 transition-all duration-200"
               >
                 <div className="flex items-start justify-between">
                   <div className="min-w-0 flex-1">
                     <h4 className="text-sm font-medium text-gray-900 dark:text-gray-100 group-hover:text-blue-600 dark:group-hover:text-blue-400 truncate">
                       {chart.name}
                     </h4>
-                    <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                    <p className="mt-0.5 text-xs text-gray-500 dark:text-gray-400">
                       {chart.type}
                     </p>
-                    <p className="mt-1 text-xs text-gray-400 dark:text-gray-500">
+                    <p className="mt-0.5 text-xs text-gray-400 dark:text-gray-500">
                       {chart.lastModified}
                     </p>
                   </div>
-                  <svg className="w-4 h-4 text-gray-400 group-hover:text-blue-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-4 h-4 text-gray-400 group-hover:text-blue-500 transition-colors flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                   </svg>
                 </div>
@@ -150,18 +122,6 @@ const ChartList = memo(({ closeSidebar }) => {
         </div>
 
         {/* Empty State */}
-        {filteredCharts.length === 0 && searchQuery.trim() && (
-          <div className="text-center py-8">
-            <svg className="w-12 h-12 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-            </svg>
-            <p className="text-gray-500 dark:text-gray-400 text-sm">
-              No charts found for &quot;{searchQuery}&quot;
-            </p>
-          </div>
-        )}
-        
-        {/* Empty State - No Charts */}
         {recentCharts.length === 0 && (
           <div className="text-center py-8">
             <svg className="w-12 h-12 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

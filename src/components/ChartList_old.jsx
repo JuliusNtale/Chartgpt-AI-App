@@ -1,26 +1,15 @@
-import { memo, useState, useMemo } from 'react';
+import { memo } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 
 const ChartList = memo(({ closeSidebar }) => {
-  const [searchQuery, setSearchQuery] = useState('');
-
   // Sample data - replace with your actual data source
-  const recentCharts = Array.from({ length: 8 }, (_, i) => ({
+  const recentCharts = Array.from({ length: 5 }, (_, i) => ({
     id: i + 1,
     name: `Chart ${i + 1}`,
-    type: i % 3 === 0 ? 'Bar Chart' : i % 3 === 1 ? 'Line Chart' : 'Pie Chart',
+    type: i % 2 === 0 ? 'Bar Chart' : 'Line Chart',
     lastModified: new Date(Date.now() - i * 24 * 60 * 60 * 1000).toLocaleDateString()
   }));
-
-  // Filter charts based on search query
-  const filteredCharts = useMemo(() => {
-    if (!searchQuery.trim()) return recentCharts;
-    return recentCharts.filter(chart => 
-      chart.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      chart.type.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-  }, [searchQuery, recentCharts]);
 
   const menuItems = [
     { 
@@ -48,11 +37,11 @@ const ChartList = memo(({ closeSidebar }) => {
   return (
     <div className="h-full flex flex-col bg-gradient-to-b from-gray-50 to-white dark:from-gray-800 dark:to-gray-900">
       {/* Navigation Menu */}
-      <div className="p-4">
-        <h3 className="text-xs font-semibold text-gray-700 dark:text-gray-300 mb-3 uppercase tracking-wide">
+      <div className="p-6">
+        <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-4 uppercase tracking-wide">
           Quick Actions
         </h3>
-        <div className="space-y-1">
+        <div className="space-y-2">
           {menuItems.map((item, index) => (
             <motion.div
               key={index}
@@ -64,7 +53,7 @@ const ChartList = memo(({ closeSidebar }) => {
                 <Link
                   to={item.to}
                   onClick={closeSidebar}
-                  className="group flex items-center space-x-3 px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 rounded-lg hover:bg-blue-50 dark:hover:bg-gray-700 hover:text-blue-600 dark:hover:text-blue-400 transition-all duration-200"
+                  className="group flex items-center space-x-3 px-4 py-3 text-sm font-medium text-gray-700 dark:text-gray-300 rounded-xl hover:bg-blue-50 dark:hover:bg-gray-700 hover:text-blue-600 dark:hover:text-blue-400 transition-all duration-200"
                 >
                   <span className="text-gray-400 group-hover:text-blue-500 transition-colors">
                     {item.icon}
@@ -77,7 +66,7 @@ const ChartList = memo(({ closeSidebar }) => {
                   target="_blank"
                   rel="noopener noreferrer"
                   onClick={closeSidebar}
-                  className="group flex items-center space-x-3 px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 rounded-lg hover:bg-blue-50 dark:hover:bg-gray-700 hover:text-blue-600 dark:hover:text-blue-400 transition-all duration-200"
+                  className="group flex items-center space-x-3 px-4 py-3 text-sm font-medium text-gray-700 dark:text-gray-300 rounded-xl hover:bg-blue-50 dark:hover:bg-gray-700 hover:text-blue-600 dark:hover:text-blue-400 transition-all duration-200"
                 >
                   <span className="text-gray-400 group-hover:text-blue-500 transition-colors">
                     {item.icon}
@@ -91,32 +80,15 @@ const ChartList = memo(({ closeSidebar }) => {
       </div>
 
       {/* Divider */}
-      <div className="mx-4 border-t border-gray-200 dark:border-gray-700"></div>
+      <div className="mx-6 border-t border-gray-200 dark:border-gray-700"></div>
 
       {/* Recent Charts */}
       <div className="flex-1 p-6 overflow-y-auto">
-        <div className="mb-4">
-          <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3 uppercase tracking-wide">
-            Recent Charts
-          </h3>
-          
-          {/* Search Input */}
-          <div className="relative">
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search charts..."
-              className="w-full px-3 py-2 pl-10 text-sm bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200"
-            />
-            <svg className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-            </svg>
-          </div>
-        </div>
-        
-        <div className="space-y-2 max-h-96 overflow-y-auto">
-          {filteredCharts.map((chart, index) => (
+        <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-4 uppercase tracking-wide">
+          Recent Charts
+        </h3>
+        <div className="space-y-2">
+          {recentCharts.map((chart, index) => (
             <motion.div
               key={chart.id}
               initial={{ opacity: 0, y: 10 }}
@@ -148,35 +120,67 @@ const ChartList = memo(({ closeSidebar }) => {
             </motion.div>
           ))}
         </div>
-
-        {/* Empty State */}
-        {filteredCharts.length === 0 && searchQuery.trim() && (
-          <div className="text-center py-8">
-            <svg className="w-12 h-12 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-            </svg>
-            <p className="text-gray-500 dark:text-gray-400 text-sm">
-              No charts found for &quot;{searchQuery}&quot;
-            </p>
-          </div>
-        )}
-        
-        {/* Empty State - No Charts */}
-        {recentCharts.length === 0 && (
-          <div className="text-center py-8">
-            <svg className="w-12 h-12 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-            </svg>
-            <p className="text-gray-500 dark:text-gray-400 text-sm">
-              No charts yet. Create your first chart!
-            </p>
-          </div>
-        )}
       </div>
     </div>
   );
 });
 
 ChartList.displayName = 'ChartList';
+
+export default ChartList;
+                  >
+                    {item.label}
+                  </a>
+                )}
+              </motion.li>
+            ))}
+          </ul>
+        </section>
+
+        {/* Recent Charts */}
+        <section>
+          <h2 className="text-lg font-semibold mb-3 text-blue-100">Recent Charts</h2>
+          <ul className="space-y-1">
+            {recentCharts.map((chart, index) => (
+              <motion.li
+                key={chart.id}
+                initial={{ opacity: 0, x: -10 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: (index + menuItems.length) * 0.1 }}
+              >
+                <Link
+                  to={`/dashboard/charts/${chart.id}`}
+                  onClick={closeSidebar}
+                  className="block px-3 py-2 rounded hover:bg-blue-500 transition-colors text-sm"
+                >
+                  {chart.name}
+                </Link>
+              </motion.li>
+            ))}
+          </ul>
+        </section>
+      </div>
+
+      {/* Upgrade Banner - Fixed at Bottom */}
+      <div 
+        className="p-2 bg-black hover:bg-orange-500 transition-colors cursor-pointer"
+        onClick={() => window.location.href = '/upgrade'}
+      >
+        <div className="flex items-center gap-3 p-2">
+          <img 
+            src="/logo1.png" 
+            alt="Pro Upgrade" 
+            className="w-10 h-10" 
+            loading="lazy"
+          />
+          <div>
+            <h3 className="font-medium text-white">Upgrade to HillsviewPro</h3>
+            <p className="text-xs text-blue-200">To unlock premium features</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 export default ChartList;
